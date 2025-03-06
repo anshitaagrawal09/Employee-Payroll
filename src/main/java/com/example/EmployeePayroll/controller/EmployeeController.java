@@ -1,7 +1,5 @@
 package com.example.EmployeePayroll.controller;
 
-//UC4
-
 import com.example.EmployeePayroll.dto.EmployeeDTO;
 import com.example.EmployeePayroll.model.Employee;
 import com.example.EmployeePayroll.service.EmployeeService;
@@ -11,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/employeepayrollservice")
@@ -20,39 +17,92 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    // Get all employees
     @GetMapping("/")
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
-    // Get employee by ID
     @GetMapping("/get/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        Optional<Employee> employee = employeeService.getEmployeeById(id);
-        return employee.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build()); // ✅ Fix: Optional handling
+        Employee employee = employeeService.getEmployeeById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employee
+        return ResponseEntity.ok(employee);
     }
 
-    // Create new employee
     @PostMapping("/create")
-    public Employee createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) { // ✅ Accept EmployeeDTO
-        return employeeService.createEmployee(employeeDTO);
+    public ResponseEntity<Employee> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+        Employee employee = employeeService.createEmployee(employeeDTO); // ✅ Fix: Call correct method
+        return ResponseEntity.ok(employee);
     }
 
-    // Update employee
     @PutMapping("/update/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) { // ✅ Accept EmployeeDTO
-        return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDTO));
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
+        Employee updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+        return ResponseEntity.ok(updatedEmployee);
     }
 
-    // Delete employee
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Employee deleted successfully");
     }
 }
+
+
+
+//UC4
+
+//import com.example.EmployeePayroll.dto.EmployeeDTO;
+//import com.example.EmployeePayroll.model.Employee;
+//import com.example.EmployeePayroll.service.EmployeeService;
+//import jakarta.validation.Valid;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@RestController
+//@RequestMapping("/employeepayrollservice")
+//public class EmployeeController {
+//
+//    @Autowired
+//    private EmployeeService employeeService;
+//
+//    // Get all employees
+//    @GetMapping("/")
+//    public List<Employee> getAllEmployees() {
+//        return employeeService.getAllEmployees();
+//    }
+//
+//    // Get employee by ID
+//    @GetMapping("/get/{id}")
+//    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+//        Optional<Employee> employee = employeeService.getEmployeeById(id);
+//        return employee.map(ResponseEntity::ok)
+//                .orElseGet(() -> ResponseEntity.notFound().build()); // ✅ Fix: Optional handling
+//    }
+//
+//    // Create new employee
+//    @PostMapping("/create")
+//    public Employee createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) { // ✅ Accept EmployeeDTO
+//        return employeeService.createEmployee(employeeDTO);
+//    }
+//
+//    // Update employee
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) { // ✅ Accept EmployeeDTO
+//        return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDTO));
+//    }
+//
+//    // Delete employee
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+//        employeeService.deleteEmployee(id);
+//        return ResponseEntity.noContent().build();
+//    }
+//}
 
 
 //import com.example.EmployeePayroll.model.Employee;

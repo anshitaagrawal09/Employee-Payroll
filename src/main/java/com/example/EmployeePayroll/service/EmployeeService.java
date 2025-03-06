@@ -1,7 +1,5 @@
+//UC5
 package com.example.EmployeePayroll.service;
-
-
-//UC4
 
 import com.example.EmployeePayroll.dto.EmployeeDTO;
 import com.example.EmployeePayroll.model.Employee;
@@ -37,10 +35,10 @@ public class EmployeeService {
         return employee;
     }
 
-    // Update employee by ID
+    // Update employee details
     public Employee updateEmployee(Long id, EmployeeDTO employeeDTO) {
         Employee employee = getEmployeeById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employees
 
         employee.setName(employeeDTO.getName());
         employee.setSalary(employeeDTO.getSalary());
@@ -49,48 +47,149 @@ public class EmployeeService {
 
     // Delete employee by ID
     public void deleteEmployee(Long id) {
-        employeeList.removeIf(emp -> emp.getId().equals(id));
+        Employee employee = getEmployeeById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employees
+        employeeList.remove(employee);
     }
 }
 
 
-//UC2
+
+
+
+//package com.example.EmployeePayroll.service;
+//
+//
+////UC5
+//
+//
+//import com.example.EmployeePayroll.dto.EmployeeDTO;
 //import com.example.EmployeePayroll.model.Employee;
-//import com.example.EmployeePayroll.repository.EmployeeRepository;
+//import com.example.EmployeePayroll.service.EmployeeService;
 //import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
 //
 //import java.util.List;
 //import java.util.Optional;
 //
-//@Service
-//public class EmployeeService {
+//@RestController
+//@RequestMapping("/employeepayrollservice")
+//public class EmployeeController {
 //
 //    @Autowired
-//    private EmployeeRepository employeeRepository;
+//    private EmployeeService employeeService;
 //
+//    @GetMapping("/")
 //    public List<Employee> getAllEmployees() {
-//        return employeeRepository.findAll();
+//        return employeeService.getAllEmployees();
 //    }
 //
-//    public Optional<Employee> getEmployeeById(Long id) {
-//        return employeeRepository.findById(id);
+//    @GetMapping("/get/{id}")
+//    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+//        Optional<Employee> employee = employeeService.getEmployeeById(id);
+//        return employee.map(ResponseEntity::ok)
+//                .orElseGet(() -> ResponseEntity.notFound().build()); // ✅ Fix: Proper Optional handling
 //    }
 //
-//    public Employee createEmployee(Employee employee) {
-//        return employeeRepository.save(employee);
+//    @PostMapping("/create")
+//    public Employee addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+//        return employeeService.createEmployee(employeeDTO);
 //    }
 //
-//    public Employee updateEmployee(Long id, Employee employeeDetails) {
-//        Employee employee = employeeRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Employee not found"));
-//        employee.setName(employeeDetails.getName());
-//        employee.setSalary(employeeDetails.getSalary());
-//        return employeeRepository.save(employee);
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+//        return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDTO));
 //    }
 //
-//    public void deleteEmployee(Long id) {
-//        employeeRepository.deleteById(id);
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
+//        employeeService.deleteEmployee(id);
+//        return ResponseEntity.ok("Employee deleted successfully");
 //    }
 //}
-
+//
+//    // Add a new employee
+//    public Employee createEmployee(EmployeeDTO employeeDTO) {
+//        Employee employee = new Employee(employeeDTO);
+//        employee.setId(idCounter++); // Simulating DB ID generation
+//        employeeList.add(employee);
+//        return employee;
+//    }
+//
+//    // Update employee details
+//    public Employee updateEmployee(Long id, EmployeeDTO employeeDTO) {
+//        Employee employee = getEmployeeById(id);
+//        employee.setName(employeeDTO.getName());
+//        employee.setSalary(employeeDTO.getSalary());
+//        return employee;
+//    }
+//
+//    // Delete employee by ID
+//    public void deleteEmployee(Long id) {
+//        Employee employee = getEmployeeById(id);
+//        employeeList.remove(employee);
+//    }
+//
+//
+//    // Update employee by ID
+////    public Employee updateEmployee(Long id, EmployeeDTO employeeDTO) {
+////        Employee employee = getEmployeeById(id)
+////                .orElseThrow(() -> new RuntimeException("Employee not found"));
+////
+////        employee.setName(employeeDTO.getName());
+////        employee.setSalary(employeeDTO.getSalary());
+////        return employee;
+////    }
+//
+//    // Delete employee by ID
+////    public void deleteEmployee(Long id) {
+////        employeeList.removeIf(emp -> emp.getId().equals(id));
+////    }
+//
+//
+//}
+//
+//
+//
+//
+////UC2
+////import com.example.EmployeePayroll.model.Employee;
+////import com.example.EmployeePayroll.repository.EmployeeRepository;
+////import org.springframework.beans.factory.annotation.Autowired;
+////import org.springframework.stereotype.Service;
+////
+////import java.util.List;
+////import java.util.Optional;
+////
+////@Service
+////public class EmployeeService {
+////
+////    @Autowired
+////    private EmployeeRepository employeeRepository;
+////
+////    public List<Employee> getAllEmployees() {
+////        return employeeRepository.findAll();
+////    }
+////
+////    public Optional<Employee> getEmployeeById(Long id) {
+////        return employeeRepository.findById(id);
+////    }
+////
+////    public Employee createEmployee(Employee employee) {
+////        return employeeRepository.save(employee);
+////    }
+////
+////    public Employee updateEmployee(Long id, Employee employeeDetails) {
+////        Employee employee = employeeRepository.findById(id)
+////                .orElseThrow(() -> new RuntimeException("Employee not found"));
+////        employee.setName(employeeDetails.getName());
+////        employee.setSalary(employeeDetails.getSalary());
+////        return employeeRepository.save(employee);
+////    }
+////
+////    public void deleteEmployee(Long id) {
+////        employeeRepository.deleteById(id);
+////    }
+////}
+//
