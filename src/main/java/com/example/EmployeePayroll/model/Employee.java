@@ -3,6 +3,8 @@ package com.example.EmployeePayroll.model;
 //UC3
 import jakarta.persistence.*;
 import lombok.*;
+import com.example.EmployeePayroll.dto.EmployeeDTO;
+
 
 @Entity
 @Table(name = "employees")
