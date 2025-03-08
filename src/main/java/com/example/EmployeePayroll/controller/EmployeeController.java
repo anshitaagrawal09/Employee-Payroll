@@ -1,15 +1,18 @@
+//UC7
 package com.example.EmployeePayroll.controller;
 
 import com.example.EmployeePayroll.dto.EmployeeDTO;
 import com.example.EmployeePayroll.model.Employee;
 import com.example.EmployeePayroll.service.EmployeeService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j // ✅ Enable logging
 @RestController
 @RequestMapping("/employeepayrollservice")
 public class EmployeeController {
@@ -19,34 +22,95 @@ public class EmployeeController {
 
     @GetMapping("/")
     public List<Employee> getAllEmployees() {
+        log.info("Fetching all employees");
         return employeeService.getAllEmployees();
     }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+        log.info("Fetching employee with ID: {}", id);
         Employee employee = employeeService.getEmployeeById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employee
+                .orElseThrow(() -> {
+                    log.error("Employee with ID {} not found", id);
+                    return new RuntimeException("Employee not found");
+                });
         return ResponseEntity.ok(employee);
     }
 
     @PostMapping("/create")
     public ResponseEntity<Employee> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        Employee employee = employeeService.createEmployee(employeeDTO); // ✅ Fix: Call correct method
+        log.info("Creating new employee: {}", employeeDTO);
+        Employee employee = employeeService.createEmployee(employeeDTO);
         return ResponseEntity.ok(employee);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
+        log.info("Updating employee with ID: {}", id);
         Employee updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
         return ResponseEntity.ok(updatedEmployee);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
+        log.info("Deleting employee with ID: {}", id);
         employeeService.deleteEmployee(id);
         return ResponseEntity.ok("Employee deleted successfully");
     }
 }
+
+
+
+//UC6
+//package com.example.EmployeePayroll.controller;
+//
+//import com.example.EmployeePayroll.dto.EmployeeDTO;
+//import com.example.EmployeePayroll.model.Employee;
+//import com.example.EmployeePayroll.service.EmployeeService;
+//import jakarta.validation.Valid;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.List;
+//
+//@RestController
+//@RequestMapping("/employeepayrollservice")
+//public class EmployeeController {
+//
+//    @Autowired
+//    private EmployeeService employeeService;
+//
+//    @GetMapping("/")
+//    public List<Employee> getAllEmployees() {
+//        return employeeService.getAllEmployees();
+//    }
+//
+//    @GetMapping("/get/{id}")
+//    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+//        Employee employee = employeeService.getEmployeeById(id)
+//                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employee
+//        return ResponseEntity.ok(employee);
+//    }
+//
+//    @PostMapping("/create")
+//    public ResponseEntity<Employee> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+//        Employee employee = employeeService.createEmployee(employeeDTO); // ✅ Fix: Call correct method
+//        return ResponseEntity.ok(employee);
+//    }
+//
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
+//        Employee updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+//        return ResponseEntity.ok(updatedEmployee);
+//    }
+//
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
+//        employeeService.deleteEmployee(id);
+//        return ResponseEntity.ok("Employee deleted successfully");
+//    }
+//}
 
 
 
