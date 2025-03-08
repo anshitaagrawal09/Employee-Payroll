@@ -1,57 +1,124 @@
-//UC5
+//UC7
 package com.example.EmployeePayroll.service;
 
 import com.example.EmployeePayroll.dto.EmployeeDTO;
 import com.example.EmployeePayroll.model.Employee;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j // ✅ Enable logging
 @Service
 public class EmployeeService {
 
     private final List<Employee> employeeList = new ArrayList<>();
     private Long idCounter = 1L; // Simulating database auto-increment
 
-    // Get all employees
     public List<Employee> getAllEmployees() {
+        log.info("Fetching all employees");
         return employeeList;
     }
 
-    // Get employee by ID (Return Optional)
     public Optional<Employee> getEmployeeById(Long id) {
+        log.info("Searching for employee with ID: {}", id);
         return employeeList.stream()
                 .filter(emp -> emp.getId().equals(id))
                 .findFirst();
     }
 
-    // Add a new employee
     public Employee createEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee(employeeDTO);
-        employee.setId(idCounter++); // Simulating DB ID generation
+        employee.setId(idCounter++);
         employeeList.add(employee);
+        log.info("Employee created successfully: {}", employee);
         return employee;
     }
 
-    // Update employee details
     public Employee updateEmployee(Long id, EmployeeDTO employeeDTO) {
         Employee employee = getEmployeeById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employees
+                .orElseThrow(() -> {
+                    log.error("Employee with ID {} not found", id);
+                    return new RuntimeException("Employee not found");
+                });
 
         employee.setName(employeeDTO.getName());
         employee.setSalary(employeeDTO.getSalary());
+        log.info("Employee updated successfully: {}", employee);
         return employee;
     }
 
-    // Delete employee by ID
     public void deleteEmployee(Long id) {
         Employee employee = getEmployeeById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employees
+                .orElseThrow(() -> {
+                    log.error("Employee with ID {} not found", id);
+                    return new RuntimeException("Employee not found");
+                });
+
         employeeList.remove(employee);
+        log.info("Employee with ID {} deleted successfully", id);
     }
 }
+
+
+
+
+//UC5
+//package com.example.EmployeePayroll.service;
+//
+//import com.example.EmployeePayroll.dto.EmployeeDTO;
+//import com.example.EmployeePayroll.model.Employee;
+//import org.springframework.stereotype.Service;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Service
+//public class EmployeeService {
+//
+//    private final List<Employee> employeeList = new ArrayList<>();
+//    private Long idCounter = 1L; // Simulating database auto-increment
+//
+//    // Get all employees
+//    public List<Employee> getAllEmployees() {
+//        return employeeList;
+//    }
+//
+//    // Get employee by ID (Return Optional)
+//    public Optional<Employee> getEmployeeById(Long id) {
+//        return employeeList.stream()
+//                .filter(emp -> emp.getId().equals(id))
+//                .findFirst();
+//    }
+//
+//    // Add a new employee
+//    public Employee createEmployee(EmployeeDTO employeeDTO) {
+//        Employee employee = new Employee(employeeDTO);
+//        employee.setId(idCounter++); // Simulating DB ID generation
+//        employeeList.add(employee);
+//        return employee;
+//    }
+//
+//    // Update employee details
+//    public Employee updateEmployee(Long id, EmployeeDTO employeeDTO) {
+//        Employee employee = getEmployeeById(id)
+//                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employees
+//
+//        employee.setName(employeeDTO.getName());
+//        employee.setSalary(employeeDTO.getSalary());
+//        return employee;
+//    }
+//
+//    // Delete employee by ID
+//    public void deleteEmployee(Long id) {
+//        Employee employee = getEmployeeById(id)
+//                .orElseThrow(() -> new RuntimeException("Employee not found")); // ✅ Fix: Handle missing employees
+//        employeeList.remove(employee);
+//    }
+//}
 
 
 
