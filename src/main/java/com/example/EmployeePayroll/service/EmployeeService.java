@@ -4,6 +4,7 @@ package com.example.EmployeePayroll.service;
 //UC9
 
 import com.example.EmployeePayroll.dto.EmployeeDTO;
+import com.example.EmployeePayroll.exception.EmployeeNotFoundException;
 import com.example.EmployeePayroll.model.Employee;
 import com.example.EmployeePayroll.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,18 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public Employee getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElse(null);
+//    public Employee getEmployeeById(Long id) {
+//        return employeeRepository.findById(id).orElse(null);
+//    }
+    //UC12
+    public Employee getEmployeeById(long id) {
+        return employeeRepository.findById(id)
+            .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + id + " not found"));
     }
+    //if invalid id given like -curl -X GET localhost:8080/employeepayrollservice/get/100 -w "\n"
+    //output- {
+    //    "message": "Employee with ID 100 not found"
+    //}
 
     public Employee updateEmployee(Long id, EmployeeDTO employeeDTO) {
         Employee employee = employeeRepository.findById(id).orElse(null);
