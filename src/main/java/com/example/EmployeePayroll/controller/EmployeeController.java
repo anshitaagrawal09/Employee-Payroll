@@ -43,6 +43,8 @@ public class EmployeeController {
 //        return ResponseEntity.ok(employee);
 //    }
     //UC10
+    //valid curl -X POST -H "Content-Type: application/json" -d '{"name": "Lisa","salary": 2000}' "http://localhost:8080/employeepayrollservice/create" -w "\n"
+    //invalid curl -X POST -H "Content-Type: application/json" -d '{"name": "Ma","salary": 3000}' "http://localhost:8080/employeepayrollservice/create" -w "\n"
 @PostMapping("/create")
 public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
     Employee employee = employeeService.createEmployee(employeeDTO);
