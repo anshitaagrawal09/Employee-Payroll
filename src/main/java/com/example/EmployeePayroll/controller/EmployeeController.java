@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -35,19 +36,30 @@ public class EmployeeController {
         return ResponseEntity.ok(employee);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Employee> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        log.info("Creating new employee: {}", employeeDTO);
-        Employee employee = employeeService.createEmployee(employeeDTO);
-        return ResponseEntity.ok(employee);
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<Employee> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+//        log.info("Creating new employee: {}", employeeDTO);
+//        Employee employee = employeeService.createEmployee(employeeDTO);
+//        return ResponseEntity.ok(employee);
+//    }
+    //UC10
+@PostMapping("/create")
+public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+    Employee employee = employeeService.createEmployee(employeeDTO);
+    return new ResponseEntity<>(employee, HttpStatus.CREATED);
+}
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
-        log.info("Updating employee with ID: {}", id);
-        Employee updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
-        return ResponseEntity.ok(updatedEmployee);
-    }
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
+//        log.info("Updating employee with ID: {}", id);
+//        Employee updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+//        return ResponseEntity.ok(updatedEmployee);
+//    }
+@PutMapping("/update/{id}")
+public ResponseEntity<Employee> updateEmployee(@PathVariable long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
+    Employee updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+    return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+}
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
