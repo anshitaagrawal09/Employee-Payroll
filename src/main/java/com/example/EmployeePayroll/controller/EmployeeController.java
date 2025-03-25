@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/employeepayrollservice")
 @Slf4j  // Lombok Logging
+@CrossOrigin(origins = "http://localhost:4200")  // Allow Angular frontend to access backend APIs
 public class EmployeeController {
 
     @Autowired
